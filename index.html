@@ -1,0 +1,154 @@
+<!doctype>
+<html>
+	<head>
+		<title>Test Benchmark</title>
+		<style>
+			html{
+				font-size: 16px;
+			}
+
+			button{
+				font-size: 1rem;
+				padding: 1rem;
+				border-radius: .5rem;
+				cursor: pointer;
+				color: #fff;
+				background-color: #008;
+				border: 0;
+				appearance: none;
+				font-weight: bold;
+				text-transform: uppercase;
+				outline: 0;
+			}
+
+			#results{
+				display: block;
+				background: #000;
+				padding: 1rem;
+				color: #fff;
+			}
+		</style>
+	</head>
+	<body>
+		<button class="class">Class Selectors</button>
+		<button class="classToggle">Class Toggling</button>
+		<button class="attr">Toggling Attributes</button>
+		<div class="myDiv"></div>
+		<div id="myDiv"></div>
+		<pre id="results">Run the test to get results.</pre>
+		<script src="js/lodash.js"></script>
+		<script src="js/benchmark.js"></script>
+		<script src="js/jquery.min.js"></script>
+		<script src="js/zepto.min.js"></script>
+		<script src="js/shoestring.min.js"></script>
+		<script src="js/sprint.min.js"></script>
+		<script>
+			// Prep everything
+			jQuery.noConflict();
+			var classBench = new Benchmark.Suite;
+			var classToggleBench = new Benchmark.Suite;
+			var attrBench = new Benchmark.Suite;
+
+			/*** Class Benchmark Tests ***/
+			classBench.add("jQuery", function(){
+				jQuery(".myDiv");
+			}).add("Zepto", function(){
+				Zepto(".myDiv");
+			}).add("Shoestring", function(){
+				shoestring(".myDiv");
+			}).add("Sprint", function(){
+				Sprint(".myDiv");
+			}).on("start", function(){
+				document.getElementById("results").innerHTML = "Class Selector Benchmark is running...";
+			}).on("complete", function() {
+				var results = "";
+
+				for(var i = 0; i < this.length; i++){
+					results += this[i].name + ": " + this[i].hz + "\n";
+				}
+
+				results += "---------------\n";
+				results += "Fastest: " + this.filter("fastest").map("name");
+
+				document.getElementById("results").innerHTML = results;
+			});
+
+			Zepto("button.class").click(function(){
+				classBench.run({
+					async: true
+				});
+				return false;
+			});
+
+			/*** Class Toggling Benchmark Tests ***/
+			classToggleBench.add("jQuery", function(){
+				jQuery(".myDiv").addClass("testClass");
+				jQuery(".myDiv").removeClass("testClass");
+			}).add("Zepto", function(){
+				Zepto(".myDiv").addClass("testClass");
+				Zepto(".myDiv").removeClass("testClass");
+			}).add("Shoestring", function(){
+				shoestring(".myDiv").addClass("testClass");
+				shoestring(".myDiv").removeClass("testClass");
+			}).add("Sprint", function(){
+				Sprint(".myDiv").addClass("testClass");
+				Sprint(".myDiv").removeClass("testClass");
+			}).on("start", function(){
+				document.getElementById("results").innerHTML = "Class Toggling Benchmark is running...";
+			}).on("complete", function() {
+				var results = "";
+
+				for(var i = 0; i < this.length; i++){
+					results += this[i].name + ": " + this[i].hz + "\n";
+				}
+
+				results += "---------------\n";
+				results += "Fastest: " + this.filter("fastest").map("name");
+
+				document.getElementById("results").innerHTML = results;
+			});
+
+			Zepto("button.classToggle").click(function(){
+				classToggleBench.run({
+					async: true
+				});
+				return false;
+			});
+
+			/*** Class Toggling Benchmark Tests ***/
+			attrBench.add("jQuery", function(){
+				jQuery(".myDiv").attr("rel", "benchmark");
+				jQuery(".myDiv").removeAttr("rel");
+			}).add("Zepto", function(){
+				Zepto(".myDiv").attr("rel", "benchmark");
+				Zepto(".myDiv").removeAttr("rel");
+			}).add("Shoestring", function(){
+				shoestring(".myDiv").attr("rel", "benchmark");
+				shoestring(".myDiv").removeAttr("rel");
+			}).add("Sprint", function(){
+				Sprint(".myDiv").attr("rel", "benchmark");
+				Sprint(".myDiv").removeAttr("rel");
+			}).on("start", function(){
+				document.getElementById("results").innerHTML = "Attribute Toggling Benchmark is running...";
+			}).on("complete", function() {
+				var results = "";
+
+				for(var i = 0; i < this.length; i++){
+					results += this[i].name + ": " + this[i].hz + "\n";
+				}
+
+				results += "---------------\n";
+				results += "Fastest: " + this.filter("fastest").map("name");
+
+				document.getElementById("results").innerHTML = results;
+			});
+
+			Zepto("button.attr").click(function(){
+				attrBench.run({
+					async: true
+				});
+				return false;
+			});
+		</script>
+	</body>
+</html>
